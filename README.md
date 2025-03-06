@@ -28,7 +28,6 @@ BudgetMate is a web application designed to help users manage their personal fin
 **As an** admin, **I want to** view a list of all registered users **so that** I can monitor and manage accounts.
 
 ### 2. View platform wide statistics
-
 **As an** admin, **I want to** see aggregated financial trends and usage statistics **so that** I can analyze how users interact with the platform.
 ---
 
