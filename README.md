@@ -2,7 +2,8 @@
 A personal finance tracker that helps users track income and expenses, in order to gain financial insights through data observation.
 
 # Team members
-Jercau Hadasa-Stefana
+Jercau Hadasa-Stefana  
+
 Finichiu Eduard-Adelin
 
 ## Project Description
@@ -29,6 +30,7 @@ BudgetMate is a web application designed to help users manage their personal fin
 
 ### 2. View platform wide statistics
 **As an** admin, **I want to** see aggregated financial trends and usage statistics **so that** I can analyze how users interact with the platform.
+
 ---
 
 This project is developed for the WebProgramming2 university subject.
