@@ -31,6 +31,9 @@ BudgetMate is a web application designed to help users manage their personal fin
 ### 2. View platform wide statistics
 **As an** admin, **I want to** see aggregated financial trends and usage statistics **so that** I can analyze how users interact with the platform.
 
+## Figma Prototype
+https://www.figma.com/proto/0Jitw7apSztEGr95w674cz/Untitled?node-id=2-2&p=f&t=T9mrvPWRmgsjWW8p-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1
+
 ---
 
 This project is developed for the WebProgramming2 university subject.
