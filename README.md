@@ -34,6 +34,9 @@ BudgetMate is a web application designed to help users manage their personal fin
 ## Figma Prototype
 https://www.figma.com/proto/0Jitw7apSztEGr95w674cz/Untitled?node-id=2-2&p=f&t=T9mrvPWRmgsjWW8p-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1
 
+## Trello Board
+https://trello.com/invite/b/67ebc595add333bc02bff77d/ATTI92e6590422c2e9a0cd5c414060e17c395EA76782/budgetmate
+
 ---
 
 This project is developed for the WebProgramming2 university subject.
