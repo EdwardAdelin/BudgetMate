@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User List | BudgetMate</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { background: #fff; }
+        .sidebar { width: 80px; background: #222; min-height: 100vh; position: fixed; top: 0; left: 0; display: flex; flex-direction: column; align-items: center; padding-top: 20px; z-index: 1000; }
+        .sidebar .logo { color: #fff; font-size: 2rem; margin-bottom: 40px; }
+        .sidebar .nav-icon { color: #bbb; font-size: 2rem; margin: 30px 0; cursor: pointer; }
+        .sidebar .nav-icon.active { color: #fff; }
+        .sidebar .bottom-icon { margin-top: auto; margin-bottom: 30px; }
+        .main-content { margin-left: 80px; min-height: 100vh; background: #fff; overflow-x: auto; }
+        .topbar { background: #e5e5e5; height: 60px; display: flex; align-items: center; padding: 0 2vw; justify-content: space-between; }
+        .search-bar { width: 22vw; min-width: 180px; max-width: 350px; }
+        .search-bar input { border-radius: 5px 0 0 5px; border-right: none; }
+        .search-bar .btn { border-radius: 0 5px 5px 0; }
+        .topbar .icons { display: flex; align-items: center; gap: 25px; }
+        .profile-header { background: #888; color: #fff; padding: 2vw 2vw 1vw 2vw; display: flex; align-items: center; justify-content: space-between; }
+        .profile-header .profile-info { display: flex; align-items: center; }
+        .profile-header .profile-pic { width: 100px; height: 100px; border-radius: 50%; background: #ccc; margin-right: 30px; }
+        .profile-header .profile-name { font-size: 2rem; font-weight: bold; }
+        .profile-header .profile-role { background: #e5e5e5; color: #222; font-size: 1rem; border-radius: 5px; padding: 2px 10px; margin-top: 8px; display: inline-block; }
+        .profile-header .logout-btn { background: #111; color: #fff; border: none; border-radius: 8px; font-size: 1.2rem; font-weight: 500; padding: 10px 40px; }
+        .user-list-container { padding: 2vw; }
+        .user-list-title { font-size: 2.5rem; font-weight: bold; margin-bottom: 0.5rem; }
+        .user-list-desc { color: #555; font-size: 1.1rem; margin-bottom: 2rem; }
+        .user-list { max-width: 700px; margin: 0 auto; }
+        .user-list-item { display: flex; align-items: center; justify-content: space-between; background: #f5f5f5; border-radius: 10px; padding: 18px 24px; margin-bottom: 18px; }
+        .user-list-item .user-info { display: flex; align-items: center; }
+        .user-list-item .user-avatar { width: 48px; height: 48px; border-radius: 50%; background: #e5e5e5; display: flex; align-items: center; justify-content: center; margin-right: 18px; }
+        .user-list-item .user-avatar i { font-size: 2rem; color: #888; }
+        .user-list-item .user-name { font-size: 1.2rem; font-weight: 500; }
+        .user-list-item .user-role { color: #888; font-size: 1rem; }
+        .user-list-item .modify-btn { background: #111; color: #fff; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 500; padding: 8px 32px; }
+        @media (max-width: 700px) { .main-content { margin-left: 0; } .sidebar { position: relative; width: 100vw; flex-direction: row; height: 60px; min-height: 0; padding-top: 0; justify-content: center; } .profile-header { flex-direction: column; align-items: flex-start; } .profile-header .profile-pic { margin-bottom: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">🧾</div>
+        <div class="nav-icon"><i class="bi bi-journal-text"></i></div>
+        <div class="nav-icon"><i class="bi bi-cash-stack"></i></div>
+        <div class="nav-icon"><i class="bi bi-bar-chart"></i></div>
+        <div class="nav-icon"><i class="bi bi-box"></i></div>
+        <div class="bottom-icon nav-icon active"><i class="bi bi-person"></i></div>
+    </div>
+    <div class="main-content">
+        <div class="topbar d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <span style="font-size:2rem;font-weight:bold;margin-right:30px;">BudgetMate</span>
+                <form class="search-bar d-flex">
+                    <input class="form-control" type="search" placeholder="Search here..." aria-label="Search">
+                    <button class="btn btn-light border" type="submit"><i class="bi bi-search"></i></button>
+                </form>
+            </div>
+            <div class="icons">
+                <i class="bi bi-bell" style="font-size:1.5rem;"></i>
+                <div class="dropdown">
+                    <button class="btn btn-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-globe"></i> Eng(US)
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Eng(US)</a></li>
+                        <li><a class="dropdown-item" href="#">Rom(RO)</a></li>
+                    </ul>
+                </div>
+                <i class="bi bi-person" style="font-size:1.5rem;"></i>
+            </div>
+        </div>
+        <div class="profile-header">
+            <div class="profile-info">
+                <div class="profile-pic"></div>
+                <div>
+                    <div class="profile-name">John Moe</div>
+                    <div class="profile-role">Admin</div>
+                </div>
+            </div>
+            <button class="logout-btn">LogOut</button>
+        </div>
+        <div class="user-list-container">
+            <div class="user-list-title">User List</div>
+            <div class="user-list-desc">Click on 'Modify' to edit user details</div>
+            <div class="user-list">
+                <div class="user-list-item">
+                    <div class="user-info">
+                        <div class="user-avatar"><i class="bi bi-person-circle"></i></div>
+                        <div>
+                            <div class="user-name">User 1</div>
+                            <div class="user-role">Role: Admin</div>
+                        </div>
+                    </div>
+                    <button class="modify-btn">Modify</button>
+                </div>
+                <div class="user-list-item">
+                    <div class="user-info">
+                        <div class="user-avatar"><i class="bi bi-person-circle"></i></div>
+                        <div>
+                            <div class="user-name">User 2</div>
+                            <div class="user-role">Role: User</div>
+                        </div>
+                    </div>
+                    <button class="modify-btn">Modify</button>
+                </div>
+                <div class="user-list-item">
+                    <div class="user-info">
+                        <div class="user-avatar"><i class="bi bi-person-circle"></i></div>
+                        <div>
+                            <div class="user-name">User 3</div>
+                            <div class="user-role">Role: Pro User</div>
+                        </div>
+                    </div>
+                    <button class="modify-btn">Modify</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
