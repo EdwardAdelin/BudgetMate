@@ -42,7 +42,7 @@ public class SecurityConfig {
             .formLogin()
                 .loginPage("/login.html")
                 .loginProcessingUrl("/api/auth/login")
-                .defaultSuccessUrl("/dashboard.html")
+                .defaultSuccessUrl("/profile.html")
                 .permitAll()
             .and()
             .logout()

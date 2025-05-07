@@ -24,4 +24,16 @@ public class AuthController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/me")
+    // Returns the username of the currently authenticated user
+    public ResponseEntity<?> getCurrentUser(org.springframework.security.core.Authentication authentication) {
+        // If user is authenticated, return their username
+        if (authentication != null && authentication.isAuthenticated()) {
+            return ResponseEntity.ok(authentication.getName());
+        } else {
+            // If not authenticated, return 401 Unauthorized
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+    }
 } 
