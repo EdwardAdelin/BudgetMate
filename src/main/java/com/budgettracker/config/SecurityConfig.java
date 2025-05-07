@@ -12,26 +12,24 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/add-budget.html",
-                    "/archive.html",
-                    "/dashboard.html",
-                    "/dashboard-alt.html",
-                    "/admin-users.html",
-                    "/add-expenses.html",
-                    "/welcome.html",
-                    "/profile.html",
+                    "/login.html",
+                    "/register.html",
                     "/static/**",
                     "/css/**",
                     "/js/**",
                     "/images/**",
-                    "/webjars/**",
-                    "/register.html"
+                    "/webjars/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin()
+                .loginPage("/login.html")
+                .defaultSuccessUrl("/dashboard.html")
+                .permitAll()
             .and()
-            .logout();
+            .logout()
+                .logoutSuccessUrl("/login.html")
+                .permitAll();
 
         return http.build();
     }
