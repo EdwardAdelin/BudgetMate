@@ -24,7 +24,8 @@ public class SecurityConfig {
                     "/css/**",
                     "/js/**",
                     "/images/**",
-                    "/webjars/**"
+                    "/webjars/**",
+                    "/register.html"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
