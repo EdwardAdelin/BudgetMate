@@ -24,8 +24,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .authorizeHttpRequests(auth -> auth
+        http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/login.html",
                     "/register.html",
@@ -38,19 +37,22 @@ public class SecurityConfig {
                     "/webjars/**"
                 ).permitAll()
                 .anyRequest().authenticated()
-            )
-            .formLogin()
+        );
+        
+        http.formLogin(form -> form
                 .loginPage("/login.html")
                 .loginProcessingUrl("/api/auth/login")
-                .defaultSuccessUrl("/profile.html")
+                .defaultSuccessUrl("/profile.html", true)
                 .permitAll()
-            .and()
-            .logout()
+        );
+        
+        http.logout(logout -> logout
                 .logoutUrl("/api/auth/logout")
                 .logoutSuccessUrl("/login.html")
                 .permitAll()
-            .and()
-            .csrf(csrf -> csrf.disable());
+        );
+        
+        http.csrf(csrf -> csrf.disable());
 
         return http.build();
     }
