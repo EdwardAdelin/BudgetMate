@@ -134,7 +134,6 @@
                 <div class="profile-pic"></div>
                 <div>
                     <div class="profile-name" id="profileUsername">John Doe</div>
-                    <div class="profile-role">Pro User</div>
                 </div>
             </div>
             <button class="logout-btn">LogOut</button>
@@ -174,6 +173,16 @@
         // If not authenticated, redirect to login page or show a message
         document.getElementById('profileUsername').textContent = 'Guest';
       });
+    
+    // Add event listener to LogOut button
+    document.querySelector('.logout-btn').addEventListener('click', function() {
+      // Call backend logout endpoint
+      fetch('/api/auth/logout', { method: 'POST' })
+        .then(() => {
+          // Redirect to login page after logout
+          window.location.href = '/login.html';
+        });
+    });
     </script>
 </body>
 </html> 
