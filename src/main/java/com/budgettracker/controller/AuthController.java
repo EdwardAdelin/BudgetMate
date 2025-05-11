@@ -1,9 +1,11 @@
 package com.budgettracker.controller;
 
 import com.budgettracker.model.User;
+import com.budgettracker.model.UserUpdateRequest;
 import com.budgettracker.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 //Handles registration requests
 @RestController
 @RequestMapping("/api/auth")
@@ -34,6 +36,20 @@ public class AuthController {
         } else {
             // If not authenticated, return 401 Unauthorized
             return ResponseEntity.status(401).body("Unauthorized");
+        }
+    }
+
+    @PutMapping("/update")
+    // Updates the authenticated user's info; only non-null fields are updated
+    public ResponseEntity<?> updateUser(@RequestBody UserUpdateRequest updateRequest, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+        try {
+            userService.updateUser(authentication.getName(), updateRequest);
+            return ResponseEntity.ok("User updated successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 } 

@@ -142,8 +142,8 @@
             <div class="update-title">Update Information</div>
             <form class="update-form">
                 <div class="mb-3">
-                    <label class="form-label">Name</label>
-                    <input type="text" class="form-control" placeholder="Enter your name">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-control" placeholder="Enter your username">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Email</label>
@@ -182,6 +182,38 @@
           // Redirect to login page after logout
           window.location.href = '/login.html';
         });
+    });
+
+    // Add event listener to Save Changes button
+    document.querySelector('.save-btn').addEventListener('click', function() {
+      // Get form fields
+      const name = document.querySelector('.update-form input[type="text"]').value.trim();
+      const email = document.querySelector('.update-form input[type="email"]').value.trim();
+      const password = document.querySelector('.update-form input[type="password"]').value.trim();
+      // Build payload with only non-empty fields
+      const payload = {};
+      if (name) payload.name = name;
+      if (email) payload.email = email;
+      if (password) payload.password = password;
+      // If nothing to update, show alert and return
+      if (Object.keys(payload).length === 0) {
+        alert('Please fill at least one field to update.');
+        return;
+      }
+      // Send update request
+      fetch('/api/auth/update', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Update failed');
+        alert('Profile updated successfully!');
+        // Optionally, reload or update UI
+      })
+      .catch(error => {
+        alert('Error updating profile: ' + error.message);
+      });
     });
     </script>
 </body>

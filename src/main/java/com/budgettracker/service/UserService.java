@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.budgettracker.model.UserUpdateRequest;
+import java.util.Optional;
 /*
 Handles user registration
 Encrypts passwords using BCrypt
@@ -50,5 +52,34 @@ public class UserService {
         User savedUser = userRepository.save(user);
         logger.debug("User successfully registered: {}", savedUser.getUsername());
         return savedUser;
+    }
+
+    @Transactional
+    // Updates user fields if present in updateRequest
+    public void updateUser(String currentUsername, UserUpdateRequest updateRequest) {
+        Optional<User> userOpt = userRepository.findByUsername(currentUsername);
+        if (userOpt.isEmpty()) throw new RuntimeException("User not found");
+        User user = userOpt.get();
+        // Update username if provided
+        if (updateRequest.getUsername() != null && !updateRequest.getUsername().isEmpty()) {
+            // Check for username uniqueness
+            if (userRepository.existsByUsername(updateRequest.getUsername()) && !updateRequest.getUsername().equals(user.getUsername())) {
+                throw new RuntimeException("Username already exists");
+            }
+            user.setUsername(updateRequest.getUsername());
+        }
+        // Update email if provided
+        if (updateRequest.getEmail() != null && !updateRequest.getEmail().isEmpty()) {
+            // Check for email uniqueness
+            if (userRepository.existsByEmail(updateRequest.getEmail()) && !updateRequest.getEmail().equals(user.getEmail())) {
+                throw new RuntimeException("Email already exists");
+            }
+            user.setEmail(updateRequest.getEmail());
+        }
+        // Update password if provided
+        if (updateRequest.getPassword() != null && !updateRequest.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(updateRequest.getPassword()));
+        }
+        userRepository.save(user); // Save changes
     }
 } 
