@@ -138,7 +138,7 @@
                 <!-- Documents will be listed here -->
             </div>
             <script>
-            // Handle file input and display file names in the list
+            // Handle file input and upload files to backend
             function handleFiles(files) {
                 const list = document.getElementById('documentList');
                 for (let i = 0; i < files.length; i++) {
@@ -146,8 +146,28 @@
                     // Create a list item for each file
                     const item = document.createElement('div');
                     item.className = 'list-group-item';
-                    item.textContent = file.name + ' (' + Math.round(file.size/1024) + ' KB)';
+                    item.textContent = file.name + ' (' + Math.round(file.size/1024) + ' KB) - Uploading...';
                     list.appendChild(item);
+
+                    // Prepare form data
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    // Upload file to backend
+                    fetch('/api/documents/upload', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            item.textContent = file.name + ' (' + Math.round(file.size/1024) + ' KB) - Uploaded';
+                        } else {
+                            item.textContent = file.name + ' (' + Math.round(file.size/1024) + ' KB) - Failed';
+                        }
+                    })
+                    .catch(() => {
+                        item.textContent = file.name + ' (' + Math.round(file.size/1024) + ' KB) - Error';
+                    });
                 }
             }
             // Hint: To persist documents, use a backend to save files and fetch them here
