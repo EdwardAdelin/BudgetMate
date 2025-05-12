@@ -85,3 +85,37 @@ mvn test
 3. Commit your changes
 4. Push to the branch
 5. Create a new Pull Request 
+
+# Database name
+budget_tracker
+
+# Table USERS
+CREATE TABLE users (
+    id BIGINT(20) NOT NULL AUTO_INCREMENT,      -- unique user id, primary key
+    email VARCHAR(255) NOT NULL,                -- user email, required
+    password VARCHAR(255) NOT NULL,             -- user password, required
+    role VARCHAR(255) NOT NULL,                 -- user role, required
+    username VARCHAR(255) NOT NULL,             -- username, required, must be unique
+    PRIMARY KEY (id),                           -- set id as primary key
+    UNIQUE (username)                           -- enforce unique usernames
+);
+
+# Table EXPENSES
+CREATE TABLE expenses (
+    id_expense INT AUTO_INCREMENT PRIMARY KEY,      -- unique expense id
+    id_user BIGINT(20) NOT NULL,                    -- user id (foreign key, matches users.id)
+    name VARCHAR(255) NOT NULL,                     -- expense name
+    sum DECIMAL(10,2) NOT NULL,                     -- amount
+    date DATE NOT NULL,                             -- expense date
+    category VARCHAR(100) NOT NULL,                 -- category
+    proof_of_payment BLOB,                          -- photo/pdf as binary (optional)
+    FOREIGN KEY (id_user) REFERENCES users(id)      -- link to users table
+);
+
+# Table CATEGORIES
+-- Table for storing expense categories
+CREATE TABLE categories (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY, -- Unique ID for each category
+    name VARCHAR(255) NOT NULL UNIQUE,    -- Category name (e.g., Transport)
+    monthly_budget DOUBLE NOT NULL        -- Monthly budget for the category
+);

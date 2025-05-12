@@ -117,10 +117,7 @@
         <div class="topbar d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center">
                 <span style="font-size:2rem;font-weight:bold;margin-right:30px;">BudgetMate</span>
-                <form class="search-bar d-flex">
-                    <input class="form-control" type="search" placeholder="Search here..." aria-label="Search">
-                    <button class="btn btn-light border" type="submit"><i class="bi bi-search"></i></button>
-                </form>
+                
             </div>
             <div class="icons">
                 <i class="bi bi-bell" style="font-size:1.5rem;"></i>
@@ -128,7 +125,6 @@
                     <i class="bi bi-person" style="font-size:1.5rem; cursor: pointer;"></i>
                     <div class="profile-dropdown-content">
                         <a href="profile.html"><i class="bi bi-person-circle"></i> See Profile</a>
-                        <a href="#" id="signOut"><i class="bi bi-box-arrow-right"></i> Sign Out</a>
                     </div>
                 </div>
             </div>
@@ -137,31 +133,17 @@
             <div class="profile-info">
                 <div class="profile-pic"></div>
                 <div>
-                    <div class="profile-name">John Doe</div>
-                    <div class="profile-role">Pro User</div>
+                    <div class="profile-name" id="profileUsername">John Doe</div>
                 </div>
             </div>
             <button class="logout-btn">LogOut</button>
         </div>
         <div class="profile-content">
-            <div class="activity-title">Recent Activity</div>
-            <div class="activity-section">
-                <div class="activity-icon"><i class="bi bi-calendar-event"></i></div>
-                <div class="activity-info">
-                    <div class="activity-label">Last Login</div>
-                    <div class="activity-value">2 days ago</div>
-                </div>
-                <div class="activity-icon"><i class="bi bi-lock"></i></div>
-                <div class="activity-info">
-                    <div class="activity-label">Security Level</div>
-                    <div class="activity-value">High</div>
-                </div>
-            </div>
             <div class="update-title">Update Information</div>
             <form class="update-form">
                 <div class="mb-3">
-                    <label class="form-label">Name</label>
-                    <input type="text" class="form-control" placeholder="Enter your name">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-control" placeholder="Enter your username">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Email</label>
@@ -176,5 +158,63 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Fetch the current user's username from the backend and update the profile
+    fetch('/api/auth/me')
+      .then(response => {
+        if (!response.ok) throw new Error('Not authenticated');
+        return response.text();
+      })
+      .then(username => {
+        // Set the username in the profile
+        document.getElementById('profileUsername').textContent = username;
+      })
+      .catch(error => {
+        // If not authenticated, redirect to login page or show a message
+        document.getElementById('profileUsername').textContent = 'Guest';
+      });
+    
+    // Add event listener to LogOut button
+    document.querySelector('.logout-btn').addEventListener('click', function() {
+      // Call backend logout endpoint
+      fetch('/api/auth/logout', { method: 'POST' })
+        .then(() => {
+          // Redirect to login page after logout
+          window.location.href = '/login.html';
+        });
+    });
+
+    // Add event listener to Save Changes button
+    document.querySelector('.save-btn').addEventListener('click', function() {
+      // Get form fields
+      const name = document.querySelector('.update-form input[type="text"]').value.trim();
+      const email = document.querySelector('.update-form input[type="email"]').value.trim();
+      const password = document.querySelector('.update-form input[type="password"]').value.trim();
+      // Build payload with only non-empty fields
+      const payload = {};
+      if (name) payload.name = name;
+      if (email) payload.email = email;
+      if (password) payload.password = password;
+      // If nothing to update, show alert and return
+      if (Object.keys(payload).length === 0) {
+        alert('Please fill at least one field to update.');
+        return;
+      }
+      // Send update request
+      fetch('/api/auth/update', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Update failed');
+        alert('Profile updated successfully!');
+        // Optionally, reload or update UI
+      })
+      .catch(error => {
+        alert('Error updating profile: ' + error.message);
+      });
+    });
+    </script>
 </body>
 </html> 
