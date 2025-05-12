@@ -111,3 +111,11 @@ CREATE TABLE expenses (
     proof_of_payment BLOB,                          -- photo/pdf as binary (optional)
     FOREIGN KEY (id_user) REFERENCES users(id)      -- link to users table
 );
+
+# Table CATEGORIES
+-- Table for storing expense categories
+CREATE TABLE categories (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY, -- Unique ID for each category
+    name VARCHAR(255) NOT NULL UNIQUE,    -- Category name (e.g., Transport)
+    monthly_budget DOUBLE NOT NULL        -- Monthly budget for the category
+);
