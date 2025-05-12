@@ -28,7 +28,7 @@ public class DocumentController {
         } catch (IOException e) {
             // Log error for debugging
             logger.error("File upload failed", e);
-            return ResponseEntity.status(500).body("Upload failed: " + e.getMessage());
+            return ResponseEntity.status(500).body("Upload has failed: " + e.getMessage());
         }
     }
 } 
