@@ -170,8 +170,45 @@
                     });
                 }
             }
-            // Hint: To persist documents, use a backend to save files and fetch them here
-            // great
+            // Fetch and display user's files
+            function fetchDocuments() {
+                fetch('/api/documents/my-files')
+                    .then(res => res.json())
+                    .then(files => {
+                        const list = document.getElementById('documentList');
+                        list.innerHTML = '';
+                        files.forEach(file => {
+                            const item = document.createElement('div');
+                            item.className = 'list-group-item';
+                            // Create clickable link for download
+                            const link = document.createElement('a');
+                            link.href = `/api/documents/download/${file.id}`;
+                            link.textContent = file.filename;
+                            link.download = file.filename;
+                            link.style.cursor = 'pointer';
+                            link.onclick = function(e) {
+                                e.preventDefault();
+                                // Download file
+                                fetch(link.href)
+                                    .then(resp => resp.blob())
+                                    .then(blob => {
+                                        const url = window.URL.createObjectURL(blob);
+                                        const a = document.createElement('a');
+                                        a.style.display = 'none';
+                                        a.href = url;
+                                        a.download = file.filename;
+                                        document.body.appendChild(a);
+                                        a.click();
+                                        window.URL.revokeObjectURL(url);
+                                    });
+                            };
+                            item.appendChild(link);
+                            list.appendChild(item);
+                        });
+                    });
+            }
+            // Call on page load
+            fetchDocuments();
             </script>
         </div>
     </div>
