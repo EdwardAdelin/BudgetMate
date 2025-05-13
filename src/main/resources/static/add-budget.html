@@ -132,14 +132,19 @@
     <script>
     // Handle Add Budget button click
     document.querySelector('.btn-primary').addEventListener('click', function() {
-        // Get values from form
-        const name = document.getElementById('budgetName').value;
-        const monthlyBudget = document.getElementById('allocatedBudget').value;
-        // Send POST request to backend
+        // Get and trim values from form
+        const name = document.getElementById('budgetName').value.trim(); // Get category name
+        const monthlyBudget = parseFloat(document.getElementById('allocatedBudget').value); // Convert to number
+        // Validate input: name must not be empty, monthlyBudget must be a valid number
+        if (!name || isNaN(monthlyBudget)) {
+            alert('Please enter a valid name and budget.'); // Show error
+            return; // Stop if invalid
+        }
+        // Send POST request to backend with validated data
         fetch('/api/categories', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, monthlyBudget })
+            body: JSON.stringify({ name, monthlyBudget }) // Send as JSON
         })
         .then(res => res.ok ? res.json() : Promise.reject('Failed to save'))
         .then(data => {
@@ -148,7 +153,7 @@
             document.getElementById('budgetName').value = '';
             document.getElementById('allocatedBudget').value = '';
         })
-        .catch(err => alert('Error: ' + err));
+        .catch(err => alert('Error: ' + err)); // Show error if request fails
     });
     </script>
 </body>

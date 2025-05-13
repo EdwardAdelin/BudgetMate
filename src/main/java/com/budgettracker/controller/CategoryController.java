@@ -24,13 +24,19 @@ public class CategoryController {
 
     // Endpoint to save a new category
     @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestBody Category category, Authentication authentication) {
+    public ResponseEntity<?> createCategory(@RequestBody Category category, Authentication authentication) {
         // Get current username
         String username = authentication.getName();
         // Find user by username
         User user = userRepository.findByUsername(username).orElseThrow();
         // Set user to category
         category.setUser(user);
+        // Check if category with same name exists for this user
+        Category existing = categoryRepository.findByNameAndUser(category.getName(), user);
+        if (existing != null) {
+            // Category name already exists for this user
+            return ResponseEntity.badRequest().body("Category with this name already exists for you.");
+        }
         // Save category to DB
         Category saved = categoryRepository.save(category);
         return ResponseEntity.ok(saved);

@@ -14,7 +14,7 @@ public class Category {
     private Long id;
 
     // Name of the category (e.g., Transport)
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     // Monthly budget for this category
