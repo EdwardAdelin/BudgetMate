@@ -44,7 +44,7 @@ public class SecurityConfig {
                     "/webjars/**"
                 ).permitAll()
                 // Admin-only pages
-                .requestMatchers("/admin-users.html", "/dashboard-alt.html", "admin-archive.html").hasRole("ADMIN")
+                .requestMatchers("/admin-users.html", "/dashboard-alt.html", "/admin-archive.html", "/user-list.html").hasRole("ADMIN")
                 // All other pages: only for authenticated non-admins
                 .requestMatchers(
                     "/dashboard.html",

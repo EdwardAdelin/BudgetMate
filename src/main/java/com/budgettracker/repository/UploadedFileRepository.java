@@ -8,4 +8,5 @@ import java.util.List;
 // Repository for UploadedFile entity
 public interface UploadedFileRepository extends JpaRepository<UploadedFile, Long> {
     List<UploadedFile> findByUser(User user); // find files by user
+    void deleteByUser(User user); // Delete all files for a user
 } 

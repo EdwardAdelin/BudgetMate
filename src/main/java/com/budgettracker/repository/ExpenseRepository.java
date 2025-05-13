@@ -17,4 +17,6 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     // Sums total spent per category for all users
     @Query("SELECT e.category.name, SUM(e.sum) FROM Expense e GROUP BY e.category.name")
     List<Object[]> findTotalSpentPerCategory();
+
+    void deleteByUser(User user); // Delete all expenses for a user
 } 
