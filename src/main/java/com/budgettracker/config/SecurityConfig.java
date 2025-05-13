@@ -48,6 +48,7 @@ public class SecurityConfig {
                 // All other pages: only for authenticated non-admins
                 .requestMatchers(
                     "/dashboard.html",
+                    "/dashboard-chart.html",
                     "/archive.html",
                     "/profile.html",
                     "/add-expenses.html",
