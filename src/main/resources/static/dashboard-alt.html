@@ -6,12 +6,35 @@
     <title>Dashboard | BudgetMate</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
     <style>
         body { background: #fff; }
         .sidebar { width: 80px; background: #222; min-height: 100vh; position: fixed; top: 0; left: 0; display: flex; flex-direction: column; align-items: center; padding-top: 20px; z-index: 1000; }
         .sidebar .logo { color: #fff; font-size: 2rem; margin-bottom: 40px; }
-        .sidebar .nav-icon { color: #bbb; font-size: 2rem; margin: 30px 0; cursor: pointer; }
-        .sidebar .nav-icon.active { color: #fff; }
+        .sidebar .nav-icon { 
+            color: #bbb; 
+            font-size: 2rem; 
+            margin: 30px 0; 
+            cursor: pointer; 
+            text-decoration: none; 
+            transition: all 0.3s ease; 
+            padding: 10px;
+            border-radius: 8px;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar .nav-icon:hover { 
+            color: #fff; 
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        .sidebar .nav-icon.active { 
+            color: #fff; 
+            background: rgba(255, 255, 255, 0.1);
+        }
         .sidebar .bottom-icon { margin-top: auto; margin-bottom: 30px; }
         .main-content { margin-left: 80px; min-height: 100vh; background: #fff; overflow-x: auto; }
         .topbar { background: #e5e5e5; height: 60px; display: flex; align-items: center; padding: 0 2vw; justify-content: space-between; }
@@ -23,8 +46,7 @@
         .dashboard-row { display: flex; flex-wrap: wrap; gap: 2vw; margin-bottom: 2vw; }
         .dashboard-card { background: #fff; border-radius: 10px; border: 1px solid #ddd; box-shadow: 0 2px 8px rgba(0,0,0,0.02); padding: 1.5vw; flex: 1 1 350px; min-width: 320px; max-width: 600px; margin-bottom: 2vw; }
         .dashboard-card h5 { font-weight: bold; margin-bottom: 10px; }
-        .chart-placeholder { width: 100%; height: 180px; background: linear-gradient(180deg,#f5f5f5 60%,#e5e5e5 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #bbb; font-size: 2rem; margin-bottom: 10px; }
-        .pie-placeholder { width: 220px; height: 220px; background: linear-gradient(135deg,#f5f5f5 60%,#e5e5e5 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #bbb; font-size: 2rem; margin: 0 auto 10px auto; }
+        .chart-placeholder { width: 100%; height: 220px; background: linear-gradient(180deg,#f5f5f5 60%,#e5e5e5 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #bbb; font-size: 2rem; margin-bottom: 10px; }
         .dashboard-summary-row { display: flex; flex-wrap: wrap; gap: 2vw; margin-bottom: 2vw; }
         .summary-card { background: #fff; border-radius: 10px; border: 1px solid #ddd; box-shadow: 0 2px 8px rgba(0,0,0,0.02); padding: 1vw 1.5vw; flex: 1 1 180px; min-width: 180px; max-width: 260px; margin-bottom: 1vw; }
         .summary-card .summary-title { font-weight: 500; font-size: 1.1rem; }
@@ -35,18 +57,46 @@
         .dashboard-actions { display: flex; justify-content: center; gap: 1vw; margin-bottom: 2vw; }
         .dashboard-actions .btn { min-width: 180px; font-size: 1.1rem; font-weight: 500; border-radius: 8px; padding: 10px 0; }
         .dashboard-actions .btn-primary { background: #111; border: none; }
-        @media (max-width: 1100px) { .dashboard-row, .dashboard-summary-row { flex-direction: column; gap: 1vw; } }
-        @media (max-width: 700px) { .main-content { margin-left: 0; } .sidebar { position: relative; width: 100vw; flex-direction: row; height: 60px; min-height: 0; padding-top: 0; justify-content: center; } }
+        @media (max-width: 1100px) { 
+            .dashboard-row, .dashboard-summary-row { 
+                flex-direction: column; 
+                gap: 1vw; 
+            } 
+        }
+        @media (max-width: 700px) { 
+            .main-content { 
+                margin-left: 80px; 
+            } 
+            .sidebar { 
+                position: fixed;
+                width: 80px;
+                flex-direction: column;
+                height: 100vh;
+                min-height: 100vh;
+                padding-top: 20px;
+                justify-content: flex-start;
+            }
+            .topbar {
+                padding: 0 1vw;
+            }
+            .search-bar {
+                width: 40vw;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <div class="logo">🧾</div>
-        <div class="nav-icon active"><i class="bi bi-journal-text"></i></div>
-        <div class="nav-icon"><i class="bi bi-cash-stack"></i></div>
-        <div class="nav-icon"><i class="bi bi-bar-chart"></i></div>
-        <div class="nav-icon"><i class="bi bi-box"></i></div>
-        <div class="bottom-icon nav-icon"><i class="bi bi-person"></i></div>
+        <a href="dashboard-alt.html" class="nav-icon" title="See Statistics">
+            <i class="bi bi-bar-chart"></i>
+        </a>
+        <a href="admin-archive.html" class="nav-icon" title="Archive">
+            <i class="bi bi-archive"></i>
+        </a>
+        <a href="admin-users.html" class="bottom-icon nav-icon" title="Profile">
+            <i class="bi bi-person"></i>
+        </a>
     </div>
     <div class="main-content">
         <div class="topbar d-flex align-items-center justify-content-between">
@@ -59,59 +109,39 @@
                 <div class="profile-dropdown">
                     <i class="bi bi-person" style="font-size:1.5rem; cursor: pointer;"></i>
                     <div class="profile-dropdown-content">
-                        <a href="profile.html"><i class="bi bi-person-circle"></i> See Profile</a>
-                        
+                        <a href="admin-users.html"><i class="bi bi-person-circle"></i> Admin Profile</a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="dashboard-container">
-            <div class="dashboard-row">
-                <div class="dashboard-card">
-                    <h5>Monthly Spendings</h5>
-                    <div class="chart-placeholder">(Line Chart)</div>
-                    <div class="d-flex justify-content-between"><span>Amount</span><span>Month</span></div>
-                </div>
-                <div class="dashboard-card">
-                    <h5>Top Spending Categories</h5>
-                    <div class="chart-placeholder">(Image)</div>
-                    <div style="font-size:1rem;font-weight:500;">See where your money is going each month</div>
-                    <div class="summary-badges mt-1"><span class="badge">Food</span> <span class="badge">Entertainment</span></div>
-                </div>
-                <div class="dashboard-card">
-                    <h5>Budgeting Tips</h5>
-                    <div class="chart-placeholder">(Image)</div>
-                    <div style="font-size:1rem;font-weight:500;">Learn how to save money and reduce unnecessary expenses</div>
-                </div>
-                <div class="dashboard-card">
-                    <h5>Category Breakdown</h5>
-                    <div class="pie-placeholder">(Pie Chart)</div>
-                    <div class="d-flex justify-content-between"><span>Amount</span><span>Categories</span></div>
-                </div>
-            </div>
-            <div class="dashboard-summary-row">
-                <div class="summary-card">
-                    <div class="summary-title">Total Spent</div>
-                    <div class="summary-value">$10,000</div>
-                    <div class="summary-desc">-5%</div>
-                </div>
-                <div class="summary-card">
-                    <div class="summary-title">Average Monthly Spend</div>
-                    <div class="summary-value">$2,500</div>
-                    <div class="summary-desc">-3%</div>
-                </div>
-                <div class="summary-card">
-                    <div class="summary-title">Top Category</div>
-                    <div class="summary-value">Groceries</div>
-                    <div class="summary-desc">+2%</div>
-                </div>
-            </div>
-            <div class="dashboard-actions">
-                <button class="btn btn-outline-dark">Export Data</button>
-                <button class="btn btn-primary">View Details</button>
+            <!-- Category totals for admin -->
+            <div class="row" id="categoryTotalsRow">
+                <h1>Category Totals (All Users)</h1>
+                <!-- JS will fill this -->
             </div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Fetch all categories with total spent by all users (admin overview)
+    fetch('/api/categories/admin/overview')
+      .then(res => res.json())
+      .then(data => {
+        // data: [{name, totalSpent}]
+        const row = document.getElementById('categoryTotalsRow');
+        row.innerHTML = '<h1>Category Totals (All Users)</h1>';
+        data.forEach(c => {
+          // Create card for each category
+          const col = document.createElement('div');
+          col.className = 'col-md-3 mb-3';
+          col.innerHTML = `<div class='summary-card'>
+            <div class='summary-title'>${c.name}</div>
+            <div class='summary-value'>Total Spent: ${Number(c.totalSpent).toFixed(2)}</div>
+          </div>`;
+          row.appendChild(col);
+        });
+      });
+    </script>
 </body>
 </html> 
