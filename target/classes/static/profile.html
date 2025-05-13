@@ -141,10 +141,10 @@
         <div class="profile-content">
             <div class="update-title">Update Information</div>
             <form class="update-form">
-                <div class="mb-3">
+                 <div class="mb-3">
                     <label class="form-label">Username</label>
                     <input type="text" class="form-control" placeholder="Enter your username">
-                </div>
+                </div> 
                 <div class="mb-3">
                     <label class="form-label">Email</label>
                     <input type="email" class="form-control" placeholder="Enter your email">
@@ -192,7 +192,7 @@
       const password = document.querySelector('.update-form input[type="password"]').value.trim();
       // Build payload with only non-empty fields
       const payload = {};
-      if (name) payload.name = name;
+      if (name) payload.username = name;
       if (email) payload.email = email;
       if (password) payload.password = password;
       // If nothing to update, show alert and return
