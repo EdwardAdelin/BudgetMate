@@ -121,50 +121,107 @@
             </div>
         </div>
         <div class="dashboard-container">
-            <div class="dashboard-row">
-                <div class="dashboard-card">
-                    <h5>Monthly Spendings</h5>
-                    <div class="chart-placeholder">(Line Chart)</div>
-                    <div class="d-flex justify-content-between"><span>Amount</span><span>Months</span></div>
+            <!-- Month/Year Picker -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <!-- Month select -->
+                    <label for="monthSelect" class="form-label">Month</label>
+                    <select id="monthSelect" class="form-select">
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
                 </div>
-                <div class="dashboard-card">
-                    <h5>Category Spendings</h5>
-                    <div class="chart-placeholder">(Bar Chart)</div>
-                    <div class="d-flex justify-content-between"><span>Amount</span><span>Categories</span></div>
+                <div class="col-md-4">
+                    <!-- Year select -->
+                    <label for="yearSelect" class="form-label">Year</label>
+                    <select id="yearSelect" class="form-select"></select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <!-- Button to fetch stats -->
+                    <button id="fetchStatsBtn" class="btn btn-primary w-100">Show Stats</button>
                 </div>
             </div>
-            <div class="dashboard-summary-row">
-                <div class="summary-card">
-                    <div class="summary-title">Top Spending Categories</div>
-                    <div class="d-flex align-items-center mb-2" style="height:40px;"><div style="width:40px;height:40px;background:#eee;border-radius:6px;margin-right:10px;"></div>
-                        <div>
-                            <div style="font-size:1rem;font-weight:500;">See where your client's money is going each month</div>
-                            <div class="summary-badges mt-1"><span class="badge">Food</span> <span class="badge">Entertainment</span></div>
-                        </div>
+            <!-- Total expenses for month -->
+            <div class="row mb-3">
+                <div class="col">
+                    <div class="summary-card">
+                        <div class="summary-title">Total Expenses</div>
+                        <div class="summary-value" id="totalExpenses">-</div>
                     </div>
                 </div>
-                <div class="summary-card">
-                    <div class="summary-title">Total Spent</div>
-                    <div class="summary-value">$500,000</div>
-                    <div class="summary-desc">-5%</div>
-                </div>
-                <div class="summary-card">
-                    <div class="summary-title">Average Monthly Spend</div>
-                    <div class="summary-value">$2,500</div>
-                    <div class="summary-desc">-3%</div>
-                </div>
-                <div class="summary-card">
-                    <div class="summary-title">Top Category</div>
-                    <div class="summary-value">Groceries</div>
-                    <div class="summary-desc">+2%</div>
-                </div>
             </div>
-            <div class="dashboard-actions">
-                <button class="btn btn-outline-dark">Export Data</button>
-                <button class="btn btn-primary">View Details</button>
+            <!-- Per-category totals -->
+            <div class="row" id="categoryTotalsRow">
+                <h1>Category Totals</h1>
+                <!-- JS will fill this -->
             </div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Fill year select with last 5 years
+    const yearSelect = document.getElementById('yearSelect');
+    const now = new Date();
+    for (let y = now.getFullYear(); y >= now.getFullYear() - 5; y--) {
+        let opt = document.createElement('option');
+        opt.value = y;
+        opt.textContent = y;
+        yearSelect.appendChild(opt);
+    }
+
+    // Fetch stats when button clicked
+    document.getElementById('fetchStatsBtn').onclick = async function() {
+        // Get selected month/year
+        const month = document.getElementById('monthSelect').value;
+        const year = document.getElementById('yearSelect').value;
+        // Fetch expenses for month
+        const expensesRes = await fetch(`/api/expenses/by-month?year=${year}&month=${month}`);
+        const expenses = await expensesRes.json();
+        // Calculate total
+        let total = 0;
+        expenses.forEach(e => total += Number(e.sum));
+        document.getElementById('totalExpenses').textContent = total.toFixed(2);
+        // Fetch categories
+        const catRes = await fetch('/api/categories');
+        const categories = await catRes.json();
+        // Calculate per-category totals
+        let catTotals = {};
+        categories.forEach(c => catTotals[c.id] = { name: c.name, total: 0 });
+        expenses.forEach(e => {
+            if (e.category && catTotals[e.category.id]) {
+                catTotals[e.category.id].total += Number(e.sum);
+            }
+        });
+        // Render per-category totals
+        const row = document.getElementById('categoryTotalsRow');
+        row.innerHTML = '<h1>Category Totals</h1>';
+        Object.values(catTotals).forEach(c => {
+            // Find category object to get monthlyBudget
+            const catObj = categories.find(cat => cat.name === c.name);
+            const budget = catObj ? Number(catObj.monthlyBudget) : 0;
+            const left = budget - c.total;
+            // Card shows spent, budget, and left
+            const col = document.createElement('div');
+            col.className = 'col-md-3 mb-3';
+            col.innerHTML = `<div class='summary-card'>
+                <div class='summary-title'>${c.name}</div>
+                <div class='summary-value'>Spent: ${c.total.toFixed(2)}</div>
+                <div class='summary-desc'>Budget: ${budget.toFixed(2)}</div>
+                <div class='summary-desc'>Left: <span style='color:${left<0?'red':'green'}'>${left.toFixed(2)}</span></div>
+            </div>`;
+            row.appendChild(col);
+        });
+    };
+    </script>
 </body>
 </html> 
