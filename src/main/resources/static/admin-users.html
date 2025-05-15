@@ -3,15 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User List | BudgetMate</title>
+    <title>Admin Profile | BudgetMate</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
     <style>
         body { background: #fff; }
         .sidebar { width: 80px; background: #222; min-height: 100vh; position: fixed; top: 0; left: 0; display: flex; flex-direction: column; align-items: center; padding-top: 20px; z-index: 1000; }
         .sidebar .logo { color: #fff; font-size: 2rem; margin-bottom: 40px; }
-        .sidebar .nav-icon { color: #bbb; font-size: 2rem; margin: 30px 0; cursor: pointer; }
-        .sidebar .nav-icon.active { color: #fff; }
+        .sidebar .nav-icon { 
+            color: #bbb; 
+            font-size: 2rem; 
+            margin: 30px 0; 
+            cursor: pointer; 
+            text-decoration: none; 
+            transition: all 0.3s ease; 
+            padding: 10px;
+            border-radius: 8px;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar .nav-icon:hover { 
+            color: #fff; 
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        .sidebar .nav-icon.active { 
+            color: #fff; 
+            background: rgba(255, 255, 255, 0.1);
+        }
         .sidebar .bottom-icon { margin-top: auto; margin-bottom: 30px; }
         .main-content { margin-left: 80px; min-height: 100vh; background: #fff; overflow-x: auto; }
         .topbar { background: #e5e5e5; height: 60px; display: flex; align-items: center; padding: 0 2vw; justify-content: space-between; }
@@ -25,42 +48,76 @@
         .profile-header .profile-name { font-size: 2rem; font-weight: bold; }
         .profile-header .profile-role { background: #e5e5e5; color: #222; font-size: 1rem; border-radius: 5px; padding: 2px 10px; margin-top: 8px; display: inline-block; }
         .profile-header .logout-btn { background: #111; color: #fff; border: none; border-radius: 8px; font-size: 1.2rem; font-weight: 500; padding: 10px 40px; }
-        .user-list-container { padding: 2vw; }
-        .user-list-title { font-size: 2.5rem; font-weight: bold; margin-bottom: 0.5rem; }
-        .user-list-desc { color: #555; font-size: 1.1rem; margin-bottom: 2rem; }
-        .user-list { max-width: 700px; margin: 0 auto; }
-        .user-list-item { display: flex; align-items: center; justify-content: space-between; background: #f5f5f5; border-radius: 10px; padding: 18px 24px; margin-bottom: 18px; }
-        .user-list-item .user-info { display: flex; align-items: center; }
-        .user-list-item .user-avatar { width: 48px; height: 48px; border-radius: 50%; background: #e5e5e5; display: flex; align-items: center; justify-content: center; margin-right: 18px; }
-        .user-list-item .user-avatar i { font-size: 2rem; color: #888; }
-        .user-list-item .user-name { font-size: 1.2rem; font-weight: 500; }
-        .user-list-item .user-role { color: #888; font-size: 1rem; }
-        .user-list-item .modify-btn { background: #111; color: #fff; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 500; padding: 8px 32px; }
-        @media (max-width: 700px) { .main-content { margin-left: 0; } .sidebar { position: relative; width: 100vw; flex-direction: row; height: 60px; min-height: 0; padding-top: 0; justify-content: center; } .profile-header { flex-direction: column; align-items: flex-start; } .profile-header .profile-pic { margin-bottom: 10px; } }
+        .profile-content { padding: 2vw; }
+        .activity-title { font-size: 2.5rem; font-weight: bold; margin-bottom: 1rem; }
+        .activity-section { display: flex; align-items: center; gap: 3vw; margin-bottom: 2vw; }
+        .activity-icon { width: 90px; height: 90px; border-radius: 50%; background: #f5f5f5; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; font-size: 2.5rem; color: #888; }
+        .activity-info { text-align: center; }
+        .activity-info .activity-label { font-size: 1.1rem; color: #888; }
+        .activity-info .activity-value { font-size: 1.5rem; font-weight: bold; }
+        .update-title { font-size: 2rem; font-weight: bold; margin: 2rem 0 1rem 0; }
+        .update-form { max-width: 600px; margin: 0 auto; }
+        .form-label { font-weight: 500; }
+        .save-btn { background: #111; color: #fff; border: none; border-radius: 8px; font-size: 1.2rem; font-weight: 500; padding: 10px 40px; width: 100%; max-width: 320px; margin: 2rem auto 0 auto; display: block; }
+        @media (max-width: 900px) { 
+            .activity-section { 
+                flex-direction: column; 
+                gap: 1vw; 
+            } 
+        }
+        @media (max-width: 700px) { 
+            .main-content { 
+                margin-left: 80px; 
+            } 
+            .sidebar { 
+                position: fixed;
+                width: 80px;
+                flex-direction: column;
+                height: 100vh;
+                min-height: 100vh;
+                padding-top: 20px;
+                justify-content: flex-start;
+            }
+            .topbar {
+                padding: 0 1vw;
+            }
+            .search-bar {
+                width: 40vw;
+            }
+            .profile-header { 
+                flex-direction: column; 
+                align-items: flex-start; 
+            } 
+            .profile-header .profile-pic { 
+                margin-bottom: 10px; 
+            } 
+        }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <div class="logo">🧾</div>
-        <div class="nav-icon"><i class="bi bi-journal-text"></i></div>
-        <div class="nav-icon"><i class="bi bi-cash-stack"></i></div>
-        <div class="nav-icon"><i class="bi bi-bar-chart"></i></div>
-        <div class="nav-icon"><i class="bi bi-box"></i></div>
-        <div class="bottom-icon nav-icon active"><i class="bi bi-person"></i></div>
+        
+        <a href="dashboard-alt.html" class="nav-icon" title="See Statistics">
+            <i class="bi bi-bar-chart"></i>
+        </a>
+        
+        <a href="admin-users.html" class="bottom-icon nav-icon active" title="Profile">
+            <i class="bi bi-person"></i>
+        </a>
     </div>
     <div class="main-content">
         <div class="topbar d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center">
                 <span style="font-size:2rem;font-weight:bold;margin-right:30px;">BudgetMate</span>
-               
+                
             </div>
             <div class="icons">
                 <i class="bi bi-bell" style="font-size:1.5rem;"></i>
                 <div class="profile-dropdown">
                     <i class="bi bi-person" style="font-size:1.5rem; cursor: pointer;"></i>
                     <div class="profile-dropdown-content">
-                        <a href="profile.html"><i class="bi bi-person-circle"></i> See Profile</a>
-                        
+                        <a href="admin-users.html"><i class="bi bi-person-circle"></i> Admin Profile</a>
                     </div>
                 </div>
             </div>
@@ -69,49 +126,93 @@
             <div class="profile-info">
                 <div class="profile-pic"></div>
                 <div>
-                    <div class="profile-name">John Moe</div>
-                    <div class="profile-role">Admin</div>
+                    <div class="profile-name" id="profileUsername">John Doe</div>
                 </div>
             </div>
             <button class="logout-btn">LogOut</button>
         </div>
-        <div class="user-list-container">
-            <div class="user-list-title">User List</div>
-            <div class="user-list-desc">Click on 'Modify' to edit user details</div>
-            <div class="user-list">
-                <div class="user-list-item">
-                    <div class="user-info">
-                        <div class="user-avatar"><i class="bi bi-person-circle"></i></div>
-                        <div>
-                            <div class="user-name">User 1</div>
-                            <div class="user-role">Role: Admin</div>
-                        </div>
-                    </div>
-                    <button class="modify-btn">Modify</button>
-                </div>
-                <div class="user-list-item">
-                    <div class="user-info">
-                        <div class="user-avatar"><i class="bi bi-person-circle"></i></div>
-                        <div>
-                            <div class="user-name">User 2</div>
-                            <div class="user-role">Role: User</div>
-                        </div>
-                    </div>
-                    <button class="modify-btn">Modify</button>
-                </div>
-                <div class="user-list-item">
-                    <div class="user-info">
-                        <div class="user-avatar"><i class="bi bi-person-circle"></i></div>
-                        <div>
-                            <div class="user-name">User 3</div>
-                            <div class="user-role">Role: Pro User</div>
-                        </div>
-                    </div>
-                    <button class="modify-btn">Modify</button>
-                </div>
+        <div class="profile-content">
+            <div class="update-title">Admin Users</div>
+            <!-- Admin Info Section -->
+            <div class="mb-4">
+                <!-- Short description of admin panel -->
+                <h2>Welcome, Admin!</h2>
+                <p class="text-muted">You are an administrator of BudgetMate. Use the tools below to keep your platform secure and efficient.</p>
+            </div>
+            <!-- System Status -->
+            <div class="mb-4">
+                <h4>System Status</h4>
+                <p class="text-success">All systems operational. No issues detected.</p>
+            </div>
+            <!-- Button to view all users -->
+            <div class="mb-4">
+                <!-- Button to go to user-list.html -->
+                <a href="user-list.html" class="btn btn-primary">View All Users</a>
+            </div>
+            <!-- Security Notice -->
+            <div class="alert alert-warning" role="alert">
+                <strong>Security Tip:</strong> Remember to log out after making changes and review user activity regularly.
             </div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Fetch the current user's username from the backend and update the profile
+    fetch('/api/auth/me')
+      .then(response => {
+        if (!response.ok) throw new Error('Not authenticated');
+        return response.text();
+      })
+      .then(username => {
+        // Set the username in the profile
+        document.getElementById('profileUsername').textContent = username;
+      })
+      .catch(error => {
+        // If not authenticated, redirect to login page or show a message
+        document.getElementById('profileUsername').textContent = 'Guest';
+      });
+    
+    // Add event listener to LogOut button
+    document.querySelector('.logout-btn').addEventListener('click', function() {
+      // Call backend logout endpoint
+      fetch('/api/auth/logout', { method: 'POST' })
+        .then(() => {
+          // Redirect to login page after logout
+          window.location.href = '/login.html';
+        });
+    });
+
+    // Add event listener to Save Changes button
+    document.querySelector('.save-btn').addEventListener('click', function() {
+      // Get form fields
+      const name = document.querySelector('.update-form input[type="text"]').value.trim();
+      const email = document.querySelector('.update-form input[type="email"]').value.trim();
+      const password = document.querySelector('.update-form input[type="password"]').value.trim();
+      // Build payload with only non-empty fields
+      const payload = {};
+      if (name) payload.name = name;
+      if (email) payload.email = email;
+      if (password) payload.password = password;
+      // If nothing to update, show alert and return
+      if (Object.keys(payload).length === 0) {
+        alert('Please fill at least one field to update.');
+        return;
+      }
+      // Send update request
+      fetch('/api/auth/update', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Update failed');
+        alert('Profile updated successfully!');
+        // Optionally, reload or update UI
+      })
+      .catch(error => {
+        alert('Error updating profile: ' + error.message);
+      });
+    });
+    </script>
 </body>
 </html> 

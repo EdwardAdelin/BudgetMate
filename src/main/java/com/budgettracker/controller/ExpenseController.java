@@ -51,4 +51,17 @@ public class ExpenseController {
         // Get expenses for user
         return ResponseEntity.ok(expenseRepository.findByUser(user));
     }
+
+    // Endpoint to get expenses for a specific month and year for the current user
+    @GetMapping("/by-month")
+    public ResponseEntity<?> getExpensesByMonth(
+            @RequestParam int year,
+            @RequestParam int month,
+            Authentication authentication) {
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username).orElseThrow();
+        java.time.LocalDate start = java.time.LocalDate.of(year, month, 1);
+        java.time.LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
+        return ResponseEntity.ok(expenseRepository.findByUserAndDateBetween(user, start, end));
+    }
 } 

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Chart | BudgetMate</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f8f9fa; }
+        .user-list-container { max-width: 500px; margin: 40px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px #0001; padding: 30px; }
+        .user-list-title { font-size: 2rem; font-weight: bold; margin-bottom: 20px; }
+        .button-container { margin-top: 30px; padding: 15px; background: #fff; box-shadow: 0 2px 8px #0001; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <!-- Main container -->
+    
+    <div class="button-container text-center">
+        <!-- Button to go to user-list.html -->
+        <a href="dashboard.html" class="btn btn-primary btn-lg">Go Back</a>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <div class="user-list-container">
+        <div class="user-list-title">All Time Spending by Category</div>
+        <!-- Chart canvas -->
+        <canvas id="spendingChart" height="200"></canvas>
+    </div>
+    
+    <script>
+    // Fetch expenses for the logged-in user
+    fetch('/api/expenses')
+      .then(res => res.json())
+      .then(data => {
+        // Group expenses by category and sum them
+        const categoryTotals = {};
+        data.forEach(exp => {
+          // Use category name, fallback to 'Uncategorized'
+          const cat = exp.category && exp.category.name ? exp.category.name : 'Uncategorized';
+          categoryTotals[cat] = (categoryTotals[cat] || 0) + parseFloat(exp.sum);
+        });
+        // Prepare data for Chart.js
+        const labels = Object.keys(categoryTotals);
+        const values = Object.values(categoryTotals);
+        // Create the chart
+        new Chart(document.getElementById('spendingChart'), {
+          type: 'doughnut', // Doughnut chart for spending
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Total Spent',
+              data: values,
+              backgroundColor: [
+                '#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#20c997', '#fd7e14', '#17a2b8'
+              ],
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { position: 'bottom' },
+              title: { display: true, text: 'Spending by Category' }
+            }
+          }
+        });
+      })
+      .catch(err => {
+        // Show error if fetch fails
+        document.querySelector('.user-list-title').textContent = 'Failed to load chart';
+      });
+    </script>
+</body>
+</html> 

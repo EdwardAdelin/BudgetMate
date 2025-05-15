@@ -11,4 +11,9 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     // Find all categories for a specific user
     List<Category> findByUser(User user);
+
+    // Find category by name and user (for duplicate check per user)
+    Category findByNameAndUser(String name, User user);
+
+    void deleteByUser(User user); // Delete all categories for a user
 } 
