@@ -35,7 +35,7 @@ docker-compose up --build
 
 The application will be available at `http://localhost:8080`
 
-### Running Locally
+### Running Project Locally
 
 1. Start MySQL database
 2. Update `application.properties` with your database credentials
