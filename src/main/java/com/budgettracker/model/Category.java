@@ -9,20 +9,20 @@ import lombok.Data;
 @Table(name = "categories")
 public class Category {
     // Primary key
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id // primary key
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // generates unique id for each category
+    private Long id; // id of the category
 
     // Name of the category (e.g., Transport)
-    @Column(nullable = false)
-    private String name;
+    @Column(nullable = false) // name cannot be null
+    private String name; // name of the category
 
     // Monthly budget for this category
-    @Column(nullable = false)
-    private Double monthlyBudget;
+    @Column(nullable = false) // monthly budget cannot be null
+    private Double monthlyBudget; // monthly budget of the category
 
     // The user who owns this category
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @ManyToOne(fetch = FetchType.LAZY) // many categories can belong to one user
+    @JoinColumn(name = "user_id", nullable = false) // user_id is the foreign key
+    private User user; // user who owns the category    
 } 

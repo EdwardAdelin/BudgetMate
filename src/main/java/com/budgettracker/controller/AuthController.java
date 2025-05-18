@@ -7,49 +7,49 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 //Handles registration requests
-@RestController
-@RequestMapping("/api/auth")
+@RestController // RestController annotation is used to create RESTful web services
+@RequestMapping("/api/auth") // Maps HTTP requests to handler methods
 public class AuthController {
 
-    private final UserService userService;
+    private final UserService userService; // UserService is used to register users
 
-    public AuthController(UserService userService) {
-        this.userService = userService;
+    public AuthController(UserService userService) {  // Constructor for AuthController
+        this.userService = userService; // UserService is used to register users
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
+    @PostMapping("/register") // Maps HTTP POST requests to the registerUser method
+    public ResponseEntity<?> registerUser(@RequestBody User user) { 
         try {
-            User registeredUser = userService.registerUser(user);
-            return ResponseEntity.ok(registeredUser);
+            User registeredUser = userService.registerUser(user); // UserService is used to register users
+            return ResponseEntity.ok(registeredUser); // Returns the registered user
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage()); // Returns the error message
         }
     }
 
-    @GetMapping("/me")
+    @GetMapping("/me") // Maps HTTP GET requests to the getCurrentUser method
     // Returns the username of the currently authenticated user
     public ResponseEntity<?> getCurrentUser(org.springframework.security.core.Authentication authentication) {
         // If user is authenticated, return their username
-        if (authentication != null && authentication.isAuthenticated()) {
-            return ResponseEntity.ok(authentication.getName());
+        if (authentication != null && authentication.isAuthenticated()) { // If the user is authenticated
+            return ResponseEntity.ok(authentication.getName()); // Returns the username of the currently authenticated user
         } else {
             // If not authenticated, return 401 Unauthorized
-            return ResponseEntity.status(401).body("Unauthorized");
+            return ResponseEntity.status(401).body("Unauthorized"); // Returns the error message
         }
     }
 
-    @PutMapping("/update")
+    @PutMapping("/update") // Maps HTTP PUT requests to the updateUser method
     // Updates the authenticated user's info; only non-null fields are updated
     public ResponseEntity<?> updateUser(@RequestBody UserUpdateRequest updateRequest, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
+        if (authentication == null || !authentication.isAuthenticated()) { // If the user is not authenticated
+            return ResponseEntity.status(401).body("Unauthorized"); // Returns the error message
         }
         try {
-            userService.updateUser(authentication.getName(), updateRequest);
-            return ResponseEntity.ok("User updated successfully");
+            userService.updateUser(authentication.getName(), updateRequest); // Updates the authenticated user's info; only non-null fields are updated
+            return ResponseEntity.ok("User updated successfully"); // Returns the success message
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage()); // Returns the error message
         }
     }
 } 

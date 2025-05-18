@@ -13,45 +13,45 @@ import java.time.LocalDate;
 @Entity
 public class Expense {
     // Primary key
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id // primary key
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // generates unique id for each expense
+    private Long id; // id of the expense
 
     // Expense name
-    private String name;
+    private String name; // name of the expense
 
     // Expense sum
-    private BigDecimal sum;
+    private BigDecimal sum; // sum of the expense
 
     // Expense date
-    private LocalDate date;
+    private LocalDate date; // date of the expense
 
     // User who owns the expense
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToOne // many expenses can belong to one user
+    @JoinColumn(name = "user_id") // user_id is the foreign key
+    private User user; // user who owns the expense
 
     // Category of the expense
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @ManyToOne // many expenses can belong to one category
+    @JoinColumn(name = "category_id") // category_id is the foreign key
+    private Category category; // category of the expense
 
     // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() { return id; } // get the id of the expense
+    public void setId(Long id) { this.id = id; } // set the id of the expense
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getName() { return name; } // get the name of the expense
+    public void setName(String name) { this.name = name; } // set the name of the expense
 
-    public BigDecimal getSum() { return sum; }
-    public void setSum(BigDecimal sum) { this.sum = sum; }
+    public BigDecimal getSum() { return sum; } // get the sum of the expense
+    public void setSum(BigDecimal sum) { this.sum = sum; } // set the sum of the expense
 
-    public LocalDate getDate() { return date; }
-    public void setDate(LocalDate date) { this.date = date; }
+    public LocalDate getDate() { return date; } // get the date of the expense
+    public void setDate(LocalDate date) { this.date = date; } // set the date of the expense
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public User getUser() { return user; } // get the user of the expense
+    public void setUser(User user) { this.user = user; } // set the user of the expense
 
-    public Category getCategory() { return category; }
-    public void setCategory(Category category) { this.category = category; }
+    public Category getCategory() { return category; } // get the category of the expense
+    public void setCategory(Category category) { this.category = category; } // set the category of the expense
 } 

@@ -15,42 +15,42 @@ import com.budgettracker.repository.UploadedFileRepository;
 import jakarta.transaction.Transactional;
 
 // Controller for user-related endpoints
-@RestController
-@RequestMapping("/api/users")
+@RestController // RestController annotation is used to create RESTful web services
+@RequestMapping("/api/users") // Maps HTTP requests to handler methods
 public class UserController {
-    private final UserRepository userRepository;
-    private final ExpenseRepository expenseRepository;
-    private final CategoryRepository categoryRepository;
-    private final UploadedFileRepository uploadedFileRepository;
+    private final UserRepository userRepository; // UserRepository is used to find users
+    private final ExpenseRepository expenseRepository; // ExpenseRepository is used to find expenses
+    private final CategoryRepository categoryRepository; // CategoryRepository is used to find categories
+    private final UploadedFileRepository uploadedFileRepository; // UploadedFileRepository is used to find uploaded files
     // Constructor injection for all repositories
     public UserController(UserRepository userRepository, ExpenseRepository expenseRepository, CategoryRepository categoryRepository, UploadedFileRepository uploadedFileRepository) {
-        this.userRepository = userRepository;
-        this.expenseRepository = expenseRepository;
-        this.categoryRepository = categoryRepository;
-        this.uploadedFileRepository = uploadedFileRepository;
+        this.userRepository = userRepository; // UserRepository is used to find users
+        this.expenseRepository = expenseRepository; // ExpenseRepository is used to find expenses
+        this.categoryRepository = categoryRepository; // CategoryRepository is used to find categories
+        this.uploadedFileRepository = uploadedFileRepository; // UploadedFileRepository is used to find uploaded files
     }
     // Returns all usernames as a list
-    @GetMapping("/usernames")
+    @GetMapping("/usernames") // Maps HTTP GET requests to the getAllUsernames method
     public List<String> getAllUsernames() {
         // Fetch all users and map to usernames
         return userRepository.findAll().stream().map(u -> u.getUsername()).collect(Collectors.toList());
     }
     // Delete user by username
-    @DeleteMapping("/{username}")
+    @DeleteMapping("/{username}") // Maps HTTP DELETE requests to the deleteUser method
     @Transactional // Ensure all deletions are in a single transaction
     public ResponseEntity<?> deleteUser(@PathVariable String username) {
-        var userOpt = userRepository.findByUsername(username);
+        var userOpt = userRepository.findByUsername(username); // Find the user by username
         if (userOpt.isEmpty()) {
             // User not found
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build(); // Returns a not found response
         }
-        var user = userOpt.get();
+        var user = userOpt.get(); // Get the user
         // Delete all expenses for user
-        expenseRepository.deleteByUser(user);
+        expenseRepository.deleteByUser(user); // Delete all expenses for user
         // Delete all categories for user
-        categoryRepository.deleteByUser(user);
+        categoryRepository.deleteByUser(user); // Delete all categories for user
         // Delete all uploaded files for user
-        uploadedFileRepository.deleteByUser(user);
+        uploadedFileRepository.deleteByUser(user); // Delete all uploaded files for user
         // Delete user
         userRepository.delete(user);
         return ResponseEntity.ok().build(); // Success
