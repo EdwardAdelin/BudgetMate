@@ -1,4 +1,57 @@
 # Budget Tracker Application
+First open CMD, and use:
+- mysql -u root -p
+the password needs to be "root"
+
+then:
+-create database budget_tracker;
+then:
+-use budget_tracker;
+then (create tables in budget_tracker):
+CREATE TABLE users (
+    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    PRIMARY KEY (id)
+);
+CREATE TABLE categories (
+    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    monthly_budget DOUBLE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    user_id BIGINT(20) NOT NULL,
+    PRIMARY KEY (id),
+    KEY (user_id),
+    CONSTRAINT fk_categories_user FOREIGN KEY (user_id) REFERENCES users(id)
+);
+CREATE TABLE expense (
+    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    date DATE DEFAULT NULL,
+    name VARCHAR(255) DEFAULT NULL,
+    sum DECIMAL(38,2) DEFAULT NULL,
+    category_id BIGINT(20) DEFAULT NULL,
+    user_id BIGINT(20) DEFAULT NULL,
+    PRIMARY KEY (id),
+    KEY (category_id),
+    KEY (user_id),
+    CONSTRAINT fk_expense_category FOREIGN KEY (category_id) REFERENCES categories(id),
+    CONSTRAINT fk_expense_user FOREIGN KEY (user_id) REFERENCES users(id)
+);
+CREATE TABLE uploaded_file (
+    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    filename VARCHAR(255) DEFAULT NULL,
+    filepath VARCHAR(255) DEFAULT NULL,
+    upload_date DATETIME(6) DEFAULT NULL,
+    user_id BIGINT(20) DEFAULT NULL,
+    PRIMARY KEY (id),
+    KEY (user_id),
+    CONSTRAINT fk_uploaded_file_user FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+
+IGNORE ANY STUFF FROM DOWN BELOW
+
 
 A web application for tracking personal and business budgets, built with Spring Boot and modern web technologies.
 
