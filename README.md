@@ -1,13 +1,17 @@
 # BudgetMate
 A personal finance tracker that helps users track income and expenses, in order to gain financial insights through data observation.
 
-# Team members
-Jercau Hadasa-Stefana  
-
-Finichiu Eduard-Adelin
-
 ## Project Description
+This app has been developed as a university project. 
+
+It is developed using Spring Boot (Java) and features a Thymeleaf server side content rendering.
+
 BudgetMate is a web application designed to help users manage their personal finances effectively. The platform allows users to track their income and expenses, set budgets, and gain insights into their spending habits. 
+
+The project contains features like:
+- Security: authentication and authorisation (via Spring Security)
+- RBAC (role based acces control): allows data separation and feature delimitation for different users (e.g. admin, user)
+
 
 ## User Stories
 
