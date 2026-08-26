@@ -11,9 +11,11 @@ The project contains elements/features like:
 - Security: authentication and authorization (via Spring Security)
 - RBAC (role based access control): allows data separation and feature delimitation for different users (e.g. admin, user)
 - Hibernate JPA: object relational mapping allows future DB migration without refactoring stuff
-- UI: a static user interface provides clear, efficient and beautiful aesthetics, with the help of Bootstrap and JavaScript
+- UI: a static user interface provides clear, efficient and beautiful aesthetics, with the help of Thymeleaf, Bootstrap and JavaScript
 - DevOps: project containerized using Docker, ready for deployment
 - Testing: test files can be observed in scr/test directory
+
+**OBS:** The UI was initially make in pure HTML + Bootstrap. I later decided to use Thymeleaf, for code clarity, code security and since I became more and more familiar with Thymeleaf and MVC as the time passed by.
 
 # Tech Stack
 **Backend**: Java, Spring Boot, Spring Security.  
@@ -21,6 +23,60 @@ The project contains elements/features like:
 **Frontend**: HTML, CSS, JavaScript.  
 
 **Deployment**: Docker, Docker Compose.
+
+## User Interface
+
+The app lets you add expenses, give an unique name for each one, a date and a category to be a part of. Here, we paid for car Fuel, 150, and checked Transport category. Let's upload it.
+![image](xmedia/addExpenses.png)
+
+If we look over the dashboard of the app, in August, we can see that we have spent some amounts of money on Sweets and another amount on Transport. The 250 total for Transport is represented by 100 (old expense)+ 150 (Fuel, just added by us). So the app keeps track of the total expenses for each category and for total expenses for all categories summed.
+![image](xmedia/dashboard.png)
+
+You can create your own custom categories for your needs. Here we want to register money for Trips, so we need this new Category for Trips. I have also inserted a budget for this category (monthly budget).
+![image](xmedia/categories.png)
+
+I have replaced the default Spring Security credentials and login page. Our custom design is more suitable than the standard UI of Spring Security. You can see more about permissions and default pages in src/main/java/com.budgettracker/config/SecurityConfig.java.
+
+Login Page:
+![image](xmedia/login.png)
+
+Register Page:
+![image](xmedia/register.png)
+
+There are also some other functions that are easy to use and understand. They might help the user and create a better experience on the platform.
+
+Some of them are: Analytics for data, profile management, or data archives. I have pasted some screenshots of them right here:
+
+Here we can see a chart that describes better our financial expenses.
+![image](xmedia/analytics.png)
+
+This profile management page enable credentials update for users.
+![image](xmedia/profile.png)
+
+The archive function enables users to save files that are important to them.
+![image](xmedia/archive.png)
+
+# Role based authentication
+
+The app checks if you are a regular user or an admin. It also verifies if the role is "ADMIN" or "ROLE_ADMIN", since some people are user to using "ROLE_name", while others who come from Js dev. might be using only "ADMIN", or "USER" al a role name.
+
+Login and Register is available for any kind of users, authenticated or not. When you Login, the site checks your role and redirects you to pages related to your role.
+For example, down below I will paste some screenshoots of the ADMIN user interface.
+
+The admin has this "welcome page" that lets him know what's happening.
+![image](xmedia/adminDashboard.png)
+
+He can see all the users and delete their accounts if needed. This waterfall deletion process is easier to do in SQL than in document type databases (this is another plus for structured DBs).
+![image](xmedia/adminUsers.png)
+
+The admin can see an overview of the expenses registered in the platform.
+![image](xmedia/adminTotals.png)
+
+
+
+
+
+
 
 ## User Stories
 
