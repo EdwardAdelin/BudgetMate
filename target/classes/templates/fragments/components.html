@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- SHARED HEAD COMPONENT -->
+<th:block th:fragment="common_head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">BudgetMate</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <style>
+        body { background: #fff; }
+        .sidebar { width: 80px; background: #222; min-height: 100vh; position: fixed; top: 0; left: 0; display: flex; flex-direction: column; align-items: center; padding-top: 20px; z-index: 1000; }
+        .sidebar .logo { color: #fff; font-size: 2rem; margin-bottom: 40px; }
+        .sidebar .nav-icon { color: #bbb; font-size: 2rem; margin: 30px 0; cursor: pointer; text-decoration: none; transition: all 0.3s ease; padding: 10px; border-radius: 8px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; }
+        .sidebar .nav-icon:hover { color: #fff; background: rgba(255, 255, 255, 0.1); transform: translateX(5px); }
+        .sidebar .nav-icon.active { color: #fff; background: rgba(255, 255, 255, 0.1); }
+        .sidebar .bottom-icon { margin-top: auto; margin-bottom: 30px; }
+        .main-content { margin-left: 80px; min-height: 100vh; background: #fff; overflow-x: auto; }
+        .topbar { background: #e5e5e5; height: 60px; display: flex; align-items: center; padding: 0 2vw; justify-content: space-between; }
+        .search-bar { width: 22vw; min-width: 180px; max-width: 350px; }
+        .search-bar input { border-radius: 5px 0 0 5px; border-right: none; }
+        .search-bar .btn { border-radius: 0 5px 5px 0; }
+        .topbar .icons { display: flex; align-items: center; gap: 25px; }
+        @media (max-width: 700px) {
+            .main-content { margin-left: 80px; }
+            .sidebar { position: fixed; width: 80px; flex-direction: column; height: 100vh; min-height: 100vh; padding-top: 20px; justify-content: flex-start; }
+            .topbar { padding: 0 1vw; }
+            .search-bar { width: 40vw; }
+        }
+    </style>
+</th:block>
+
+<!-- USER SIDEBAR COMPONENT -->
+<div th:fragment="user_sidebar(activePage)" class="sidebar">
+    <div class="logo">🧾</div>
+    <a th:href="@{/add-expenses}" class="nav-icon" th:classappend="${activePage == 'expenses'} ? 'active' : ''" title="Add Expenses">
+        <i class="bi bi-plus-circle"></i>
+    </a>
+    <a th:href="@{/add-budget}" class="nav-icon" th:classappend="${activePage == 'budget'} ? 'active' : ''" title="Add Category and Budget">
+        <i class="bi bi-cash-stack"></i>
+    </a>
+    <a th:href="@{/dashboard}" class="nav-icon" th:classappend="${activePage == 'dashboard'} ? 'active' : ''" title="See Statistics">
+        <i class="bi bi-bar-chart"></i>
+    </a>
+    <a th:href="@{/archive}" class="nav-icon" th:classappend="${activePage == 'archive'} ? 'active' : ''" title="Archive">
+        <i class="bi bi-archive"></i>
+    </a>
+    <a th:href="@{/profile}" class="bottom-icon nav-icon" th:classappend="${activePage == 'profile'} ? 'active' : ''" title="Profile">
+        <i class="bi bi-person"></i>
+    </a>
+</div>
+
+<!-- ADMIN SIDEBAR COMPONENT -->
+<div th:fragment="admin_sidebar(activePage)" class="sidebar">
+    <div class="logo">🧾</div>
+    <a th:href="@{/dashboard-alt}" class="nav-icon" th:classappend="${activePage == 'dashboard'} ? 'active' : ''" title="See Statistics">
+        <i class="bi bi-bar-chart"></i>
+    </a>
+    <a th:href="@{/admin-users}" class="bottom-icon nav-icon" th:classappend="${activePage == 'users'} ? 'active' : ''" title="Profile">
+        <i class="bi bi-person"></i>
+    </a>
+</div>
+
+<!-- TOPBAR COMPONENT -->
+<div th:fragment="topbar(showChartBtn, profileLink, profileText)" class="topbar d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center">
+        <span style="font-size:2rem;font-weight:bold;margin-right:30px;">BudgetMate</span>
+    </div>
+    <div th:class="${showChartBtn} ? 'd-flex align-items-center gap-3' : 'icons'">
+        <a th:if="${showChartBtn}" th:href="@{/dashboard-chart}" class="btn btn-primary px-4 py-2 me-3" style="font-size:1.1rem; font-weight:500; border-radius:8px;">See chart data</a>
+<!--        <i class="bi bi-bell" style="font-size:1.5rem;"></i>-->
+        <div class="profile-dropdown">
+            <div class="profile-dropdown-content">
+                <a th:href="@{${profileLink}}" style="text-decoration:none"><i class="bi bi-person" style="font-size:1.5rem; cursor: pointer;"></i><span th:text="${profileText}"></span></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPTS COMPONENT -->
+<th:block th:fragment="scripts">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</th:block>
+
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/components :: common_head('Admin Archive | BudgetMate')}"></th:block>
+    <style>
+        .archive-title { font-size: 2.5rem; font-weight: bold; margin-top: 2rem; margin-bottom: 2rem; }
+        .admin-controls { margin-bottom: 2rem; }
+        .user-filter { margin-bottom: 1rem; }
+        .document-table { width: 100%; }
+        .document-table th { background: #f5f5f5; }
+        .action-buttons { display: flex; gap: 10px; }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/components :: admin_sidebar('users')}"></div>
+
+<div class="main-content">
+    <div th:replace="~{fragments/components :: topbar(false, '/admin-users', 'Admin Profile')}"></div>
+
+    <div class="container-fluid">
+        <div class="archive-title">Document Archive</div>
+        <!-- Data will be populated here -->
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/components :: scripts}"></th:block>
+<script>
+    // Fetch all documents
+    function fetchAllDocuments() {
+        fetch('/api/admin/documents/all')
+            .then(res => res.json())
+            .then(documents => {
+                const tbody = document.getElementById('documentTableBody');
+                if (!tbody) return; // Guard clause in case table is missing
+                tbody.innerHTML = '';
+                documents.forEach(doc => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                            <td>${doc.filename}</td>
+                            <td>${doc.username}</td>
+                            <td>${doc.type}</td>
+                            <td>${Math.round(doc.size/1024)} KB</td>
+                            <td>${new Date(doc.uploadDate).toLocaleDateString()}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-primary" onclick="downloadDocument('${doc.id}')">
+                                        <i class="bi bi-download"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteDocument('${doc.id}')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        `;
+                    tbody.appendChild(row);
+                });
+            });
+    }
+
+    // Download document
+    function downloadDocument(docId) {
+        fetch(`/api/admin/documents/download/${docId}`)
+            .then(res => res.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'document';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            });
+    }
+
+    // Delete document
+    function deleteDocument(docId) {
+        if (confirm('Are you sure you want to delete this document?')) {
+            fetch(`/api/admin/documents/delete/${docId}`, {
+                method: 'DELETE'
+            })
+                .then(res => {
+                    if (res.ok) {
+                        fetchAllDocuments();
+                    }
+                });
+        }
+    }
+
+    // Fetch users for filter
+    function fetchUsers() {
+        fetch('/api/admin/users')
+            .then(res => res.json())
+            .then(users => {
+                const select = document.getElementById('userSelect');
+                if (!select) return; // Guard clause in case select is missing
+                users.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.id;
+                    option.textContent = user.username;
+                    select.appendChild(option);
+                });
+            });
+    }
+
+    // Initialize on page load
+    fetchAllDocuments();
+    fetchUsers();
+</script>
+</body>
+</html>

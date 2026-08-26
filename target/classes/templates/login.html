@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/components :: common_head('Login - Budget Tracker')}"></th:block>
+    <style>
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        .error-message {
+            color: red;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="login-container">
+        <h2 class="text-center mb-4">Login</h2>
+        <!-- Thymeleaf dynamic action URL -->
+        <form id="loginForm" th:action="@{/api/auth/login}" method="POST">
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+                <div id="usernameError" class="error-message"></div>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+                <div id="passwordError" class="error-message"></div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+        <div class="text-center mt-3">
+            <p>Don't have an account? <a th:href="@{/register}">Register here</a></p>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/components :: scripts}"></th:block>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Reset error messages
+        document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // Send login request
+        fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'username': username,
+                'password': password
+            })
+        })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else if (response.ok) {
+                    // Dacă autentificarea a reușit, redirecționează manual
+                    window.location.href = '/dashboard';
+                } else {
+                    throw new Error('Invalid username or password');
+                }
+            })
+            .catch(error => {
+                document.getElementById('passwordError').textContent = 'Invalid username or password';
+                document.getElementById('passwordError').style.display = 'block';
+            });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/components :: common_head('Admin Profile | BudgetMate')}"></th:block>
+    <style>
+        .profile-header { background: #888; color: #fff; padding: 2vw 2vw 1vw 2vw; display: flex; align-items: center; justify-content: space-between; }
+        .profile-header .profile-info { display: flex; align-items: center; }
+        .profile-header .profile-pic { width: 100px; height: 100px; border-radius: 50%; background: #ccc; margin-right: 30px; }
+        .profile-header .profile-name { font-size: 2rem; font-weight: bold; }
+        .profile-header .profile-role { background: #e5e5e5; color: #222; font-size: 1rem; border-radius: 5px; padding: 2px 10px; margin-top: 8px; display: inline-block; }
+        .profile-header .logout-btn { background: #111; color: #fff; border: none; border-radius: 8px; font-size: 1.2rem; font-weight: 500; padding: 10px 40px; }
+        .profile-content { padding: 2vw; }
+        .activity-title { font-size: 2.5rem; font-weight: bold; margin-bottom: 1rem; }
+        .activity-section { display: flex; align-items: center; gap: 3vw; margin-bottom: 2vw; }
+        .activity-icon { width: 90px; height: 90px; border-radius: 50%; background: #f5f5f5; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; font-size: 2.5rem; color: #888; }
+        .activity-info { text-align: center; }
+        .activity-info .activity-label { font-size: 1.1rem; color: #888; }
+        .activity-info .activity-value { font-size: 1.5rem; font-weight: bold; }
+        .update-title { font-size: 2rem; font-weight: bold; margin: 2rem 0 1rem 0; }
+        .update-form { max-width: 600px; margin: 0 auto; }
+        .form-label { font-weight: 500; }
+        .save-btn { background: #111; color: #fff; border: none; border-radius: 8px; font-size: 1.2rem; font-weight: 500; padding: 10px 40px; width: 100%; max-width: 320px; margin: 2rem auto 0 auto; display: block; }
+        @media (max-width: 900px) { .activity-section { flex-direction: column; gap: 1vw; } }
+        @media (max-width: 700px) {
+            .profile-header { flex-direction: column; align-items: flex-start; }
+            .profile-header .profile-pic { margin-bottom: 10px; }
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/components :: admin_sidebar('users')}"></div>
+
+<div class="main-content">
+    <div th:replace="~{fragments/components :: topbar(false, '/admin-users', 'Admin Profile')}"></div>
+
+    <div class="profile-header">
+        <div class="profile-info">
+            <div class="profile-pic"></div>
+            <div>
+                <div class="profile-name" id="profileUsername">John Doe</div>
+            </div>
+        </div>
+        <button class="logout-btn">LogOut</button>
+    </div>
+    <div class="profile-content">
+        <div class="update-title">Admin Users</div>
+        <!-- Admin Info Section -->
+        <div class="mb-4">
+            <h2>Welcome, Admin!</h2>
+            <p class="text-muted">You are an administrator of BudgetMate. Use the tools below to keep your platform secure and efficient.</p>
+        </div>
+        <!-- System Status -->
+        <div class="mb-4">
+            <h4>System Status</h4>
+            <p class="text-success">All systems operational. No issues detected.</p>
+        </div>
+        <!-- Button to view all users -->
+        <div class="mb-4">
+            <a th:href="@{/user-list}" class="btn btn-primary">View All Users</a>
+        </div>
+        <!-- Security Notice -->
+        <div class="alert alert-warning" role="alert">
+            <strong>Security Tip:</strong> Remember to log out after making changes and review user activity regularly.
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/components :: scripts}"></th:block>
+<script>
+    // Fetch the current user's username from the backend and update the profile
+    fetch('/api/auth/me')
+        .then(response => {
+            if (!response.ok) throw new Error('Not authenticated');
+            return response.text();
+        })
+        .then(username => {
+            document.getElementById('profileUsername').textContent = username;
+        })
+        .catch(error => {
+            document.getElementById('profileUsername').textContent = 'Guest';
+        });
+
+    // Add event listener to LogOut button
+    document.querySelector('.logout-btn').addEventListener('click', function() {
+        fetch('/api/auth/logout', { method: 'POST' })
+            .then(() => {
+                window.location.href = '/login';
+            });
+    });
+
+    // Add event listener to Save Changes button (if form exists on page in future)
+    const saveBtn = document.querySelector('.save-btn');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', function() {
+            const name = document.querySelector('.update-form input[type="text"]').value.trim();
+            const email = document.querySelector('.update-form input[type="email"]').value.trim();
+            const password = document.querySelector('.update-form input[type="password"]').value.trim();
+
+            const payload = {};
+            if (name) payload.name = name;
+            if (email) payload.email = email;
+            if (password) payload.password = password;
+
+            if (Object.keys(payload).length === 0) {
+                alert('Please fill at least one field to update.');
+                return;
+            }
+
+            fetch('/api/auth/update', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Update failed');
+                    alert('Profile updated successfully!');
+                })
+                .catch(error => {
+                    alert('Error updating profile: ' + error.message);
+                });
+        });
+    }
+</script>
+</body>
+</html>

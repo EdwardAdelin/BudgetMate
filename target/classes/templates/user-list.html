@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/components :: common_head('User List | BudgetMate')}"></th:block>
+    <style>
+        body { background: #f8f9fa; }
+        .user-list-container { max-width: 500px; margin: 40px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px #0001; padding: 30px; }
+        .user-list-title { font-size: 2rem; font-weight: bold; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+<div class="user-list-container">
+    <div class="user-list-title">Registered Users</div>
+    <ul class="list-group" id="userList">
+        <!-- List items will be added by JS -->
+    </ul>
+</div>
+<div class="text-center mb-5">
+    <a th:href="@{/admin-users}" class="btn btn-primary">Back to Admin Panel</a>
+</div>
+
+<th:block th:replace="~{fragments/components :: scripts}"></th:block>
+<script>
+    fetch('/api/users/usernames')
+        .then(response => response.json())
+        .then(usernames => {
+            const userList = document.getElementById('userList');
+            usernames.forEach(username => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                li.textContent = username;
+
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-danger btn-sm';
+                btn.textContent = 'Delete';
+
+                btn.onclick = function() {
+                    if (!confirm('Delete user ' + username + '?')) return;
+                    fetch('/api/users/' + encodeURIComponent(username), { method: 'DELETE' })
+                        .then(response => {
+                            if (!response.ok) throw new Error('Delete failed');
+                            li.remove();
+                        })
+                        .catch(error => {
+                            alert('Error deleting user: ' + error.message);
+                        });
+                };
+                li.appendChild(btn);
+                userList.appendChild(li);
+            });
+        })
+        .catch(error => {
+            document.getElementById('userList').innerHTML = '<li class="list-group-item text-danger">Failed to load users.</li>';
+        });
+</script>
+</body>
+</html>
