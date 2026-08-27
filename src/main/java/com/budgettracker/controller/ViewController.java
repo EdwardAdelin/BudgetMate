@@ -1,10 +1,20 @@
 package com.budgettracker.controller;
 
+import com.budgettracker.model.User;
+import com.budgettracker.service.UserService;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class ViewController {
+
+    private final UserService userService;
+
+    public ViewController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping({"/", "/login"})
     public String login() {
@@ -52,7 +62,11 @@ public class ViewController {
     }
 
     @GetMapping("/profile")
-    public String profile() {
+    public String profile(Model model, Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            User user = userService.findByUsername(authentication.getName());
+            model.addAttribute("user", user);
+        }
         return "profile";
     }
 

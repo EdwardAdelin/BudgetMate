@@ -51,7 +51,8 @@ Here we can see a chart that describes better our financial expenses.
 ![image](xmedia/analytics.png)
 
 This profile management page enable credentials update for users.
-![image](xmedia/profile.png)
+The profile picture upload stores the uploaded image on the server, while the User table only holds the global path of the image (in String format, so no binary data in the SQL table). By doing so, we do not waste RAM on loading binary resources from the database. 
+![image](xmedia/profilePage.png)
 
 The archive function enables users to save files that are important to them.
 ![image](xmedia/archive.png)

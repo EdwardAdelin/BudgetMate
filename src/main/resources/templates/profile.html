@@ -5,7 +5,7 @@
     <style>
         .profile-header { background: #888; color: #fff; padding: 2vw 2vw 1vw 2vw; display: flex; align-items: center; justify-content: space-between; }
         .profile-header .profile-info { display: flex; align-items: center; }
-        .profile-header .profile-pic { width: 100px; height: 100px; border-radius: 50%; background: #ccc; margin-right: 30px; }
+        .profile-header .profile-pic .profile-pic-image { width: 100px; height: 100px; border-radius: 50%; background: #ccc; margin-right: 30px; }
         .profile-header .profile-name { font-size: 2rem; font-weight: bold; }
         .profile-header .profile-role { background: #e5e5e5; color: #222; font-size: 1rem; border-radius: 5px; padding: 2px 10px; margin-top: 8px; display: inline-block; }
         .profile-header .logout-btn { background: #111; color: #fff; border: none; border-radius: 8px; font-size: 1.2rem; font-weight: 500; padding: 10px 40px; }
@@ -20,6 +20,7 @@
         .update-form { max-width: 600px; margin: 0 auto; }
         .form-label { font-weight: 500; }
         .save-btn { background: #111; color: #fff; border: none; border-radius: 8px; font-size: 1.2rem; font-weight: 500; padding: 10px 40px; width: 100%; max-width: 320px; margin: 2rem auto 0 auto; display: block; }
+        .update-btn { background: #111; color: #fff; border: none; border-radius: 8px; font-size: 0.5rem; font-weight: 250; padding: 5px 20px; width: 100%; max-width: 320px; margin: 1rem auto 0 auto; display: block; }
         @media (max-width: 900px) { .activity-section { flex-direction: column; gap: 1vw; } }
         @media (max-width: 700px) {
             .profile-header { flex-direction: column; align-items: flex-start; }
@@ -35,7 +36,14 @@
 
     <div class="profile-header">
         <div class="profile-info">
-            <div class="profile-pic"></div>
+            <div class="profile-pic">
+                <img class="profile-pic-image" id="profilePicImage"  th:src="${user != null && user.profilePicture != null
+                 ? user.profilePicture
+                 : '/flamingo.webp'}" alt="Profile picture">
+                <!--this input is hidden and managed by the button bellow-->
+                <input type="file" id="profilePicInput" accept="image/*" style="display: none;">
+                <button type="button" class="update-btn" id="uploadPicBtn">Update Profile Picture</button>
+            </div>
             <div>
                 <div class="profile-name" id="profileUsername">John Doe</div>
             </div>
@@ -100,7 +108,7 @@
 
         fetch('/api/auth/update', {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(payload)
         })
             .then(response => {
@@ -111,6 +119,45 @@
                 alert('Error updating profile: ' + error.message);
             });
     });
+
+    //  -----------
+    //     Profile picture logic for uploading it
+        const uploadPicBtn = document.getElementById('uploadPicBtn');
+        const profilePicInput = document.getElementById('profilePicInput');
+
+        // when button pressed, we can select picture from local device
+        uploadPicBtn.addEventListener('click', function() {
+            profilePicInput.click();
+        });
+
+        // after user chose a file
+        profilePicInput.addEventListener('change', function() {
+            if (!profilePicInput.files || profilePicInput.files.length === 0) {
+                return;
+            }
+
+            const file = profilePicInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/api/documents/upload-profile-pic', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to upload picture');
+                    return response.text();
+                })
+                .then(msg => {
+                    alert('Profile picture updated!');
+                    // referesh
+                    window.location.reload();
+                })
+                .catch(error => {
+                    alert('Error: ' + error.message);
+                });
+    });
+
 </script>
 </body>
 </html>
