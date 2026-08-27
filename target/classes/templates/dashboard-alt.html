@@ -2,24 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:replace="~{fragments/components :: common_head('Dashboard | BudgetMate')}"></th:block>
-    <style>
-        .dashboard-container { padding: 2vw 2vw 0 2vw; }
-        .dashboard-row { display: flex; flex-wrap: wrap; gap: 2vw; margin-bottom: 2vw; }
-        .dashboard-card { background: #fff; border-radius: 10px; border: 1px solid #ddd; box-shadow: 0 2px 8px rgba(0,0,0,0.02); padding: 1.5vw; flex: 1 1 350px; min-width: 320px; max-width: 600px; margin-bottom: 2vw; }
-        .dashboard-card h5 { font-weight: bold; margin-bottom: 10px; }
-        .chart-placeholder { width: 100%; height: 220px; background: linear-gradient(180deg,#f5f5f5 60%,#e5e5e5 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #bbb; font-size: 2rem; margin-bottom: 10px; }
-        .dashboard-summary-row { display: flex; flex-wrap: wrap; gap: 2vw; margin-bottom: 2vw; }
-        .summary-card { background: #fff; border-radius: 10px; border: 1px solid #ddd; box-shadow: 0 2px 8px rgba(0,0,0,0.02); padding: 1vw 1.5vw; flex: 1 1 180px; min-width: 180px; max-width: 260px; margin-bottom: 1vw; }
-        .summary-card .summary-title { font-weight: 500; font-size: 1.1rem; }
-        .summary-card .summary-value { font-size: 1.5rem; font-weight: bold; }
-        .summary-card .summary-desc { color: #888; font-size: 1rem; }
-        .summary-card .summary-badges { margin-top: 8px; }
-        .summary-card .badge { background: #e5e5e5; color: #222; font-size: 0.9rem; border-radius: 5px; margin-right: 5px; }
-        .dashboard-actions { display: flex; justify-content: center; gap: 1vw; margin-bottom: 2vw; }
-        .dashboard-actions .btn { min-width: 180px; font-size: 1.1rem; font-weight: 500; border-radius: 8px; padding: 10px 0; }
-        .dashboard-actions .btn-primary { background: #111; border: none; }
-        @media (max-width: 1100px) { .dashboard-row, .dashboard-summary-row { flex-direction: column; gap: 1vw; } }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/dashboard-alt.css}">
 </head>
 <body>
 <!-- Injects the Admin sidebar version -->
@@ -36,22 +19,6 @@
 </div>
 
 <th:block th:replace="~{fragments/components :: scripts}"></th:block>
-<script>
-    fetch('/api/categories/admin/overview')
-        .then(res => res.json())
-        .then(data => {
-            const row = document.getElementById('categoryTotalsRow');
-            row.innerHTML = '<h1>Category Totals (All Users)</h1>';
-            data.forEach(c => {
-                const col = document.createElement('div');
-                col.className = 'col-md-3 mb-3';
-                col.innerHTML = `<div class='summary-card'>
-            <div class='summary-title'>${c.name}</div>
-            <div class='summary-value'>Total Spent: ${Number(c.totalSpent).toFixed(2)}</div>
-          </div>`;
-                row.appendChild(col);
-            });
-        });
-</script>
+<script th:src="@{/js/dashboard-alt.js}"></script>
 </body>
 </html>
