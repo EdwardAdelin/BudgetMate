@@ -15,7 +15,7 @@ Encrypts passwords using BCrypt
 Validates username and email uniqueness
  */
 @Service
-public class UserService {
+public class UserService{
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -23,6 +23,9 @@ public class UserService {
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+    }
+    public User findByUsername(String username){
+        return userRepository.findByUsername(username).orElseThrow(()->new RuntimeException("The user with username" + username + " has not been found."));
     }
 
     @Transactional
@@ -82,4 +85,4 @@ public class UserService {
         }
         userRepository.save(user); // Save changes
     }
-} 
+}

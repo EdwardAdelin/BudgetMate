@@ -94,4 +94,34 @@ public class DocumentController {
             return ResponseEntity.status(500).body("Download failed: " + e.getMessage());
         }
     }
+
+    @PostMapping("/upload-profile-pic")
+    public ResponseEntity<?> uploadProfilePicture(@RequestParam("file") MultipartFile file, Authentication authentication) {
+        String username = authentication.getName();
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isEmpty()) return ResponseEntity.status(401).body("User not found");
+
+        User user = userOpt.get();
+
+        // same folder as the documents one
+        String uploadDir = System.getProperty("user.dir") + File.separator + "uploads";
+        File dir = new File(uploadDir);
+        if (!dir.exists()) dir.mkdirs();
+
+        try {
+            // unique rename, no special character
+            String fileName = "profile_" + user.getId() + "_" + file.getOriginalFilename();
+            File dest = new File(dir, fileName);
+            file.transferTo(dest);
+
+            // update field from User entity
+            user.setProfilePicture("/uploads/" + fileName);
+            userRepository.save(user);
+
+            return ResponseEntity.ok("Profile picture updated successfully");
+        } catch (IOException e) {
+            logger.error("Profile picture upload failed", e);
+            return ResponseEntity.status(500).body("Upload failed: " + e.getMessage());
+        }
+    }
 } 
